@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Messages animations */
+        .alert-enter {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+
+        .alert-enter-active {
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 300ms, transform 300ms;
+        }
+
+        .alert-exit {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .alert-exit-active {
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: opacity 300ms, transform 300ms;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex items-center justify-center bg-gray-100">
+
+    <!-- Messages Container -->
+    <div class="fixed top-4 left-1/2 transform -translate-x-1/2 w-full max-w-md z-50 space-y-3" id="messages-container"
+        aria-live="assertive">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert-enter {% if message.tags == 'success' %}bg-green-50 border border-green-200{% else %}bg-red-50 border border-red-200{% endif %} rounded-lg p-4 shadow-md"
+            role="alert">
+            <div class="flex items-start">
+                <div class="flex-shrink-0">
+                    {% if message.tags == 'success' %}
+                    <svg class="h-5 w-5 text-green-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                        fill="currentColor">
+                        <path fill-rule="evenodd"
+                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    {% else %}
+                    <svg class="h-5 w-5 text-red-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                        fill="currentColor">
+                        <path fill-rule="evenodd"
+                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    {% endif %}
+                </div>
+                <div class="ml-3 flex-1">
+                    <p
+                        class="text-sm font-medium {% if message.tags == 'success' %}text-green-800{% else %}text-red-800{% endif %}">
+                        {{ message }}
+                    </p>
+                </div>
+                <div class="ml-auto pl-3">
+                    <button
+                        class="{% if message.tags == 'success' %}text-green-800 hover:text-green-600{% else %}text-red-800 hover:text-red-600{% endif %} transition"
+                        onclick="dismissMessage(this)" aria-label="Dismiss message">
+                        <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd"
+                                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        {% endif %}
+    </div>
+
+    <div class="w-full max-w-md bg-white rounded-2xl shadow-lg p-8">
+        <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Create Your Account</h2>
+
+
+        <form id="form" method="POST" action="{% url 'register-page' %}">
+            {% csrf_token %}
+
+
+            <div class="mb-4">
+                <label for="username" class="block text-sm font-medium text-gray-700 mb-1">Username</label>
+                <input type="text" name="username" id="username" required
+                    class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-pink-500">
+            </div>
+
+
+            <div class="mb-4">
+                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                <input type="email" name="email" id="email" 
+                    class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-pink-500">
+            </div>
+
+
+            <div class="mb-6">
+                <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                <input type="password" name="password" id="password" required
+                    class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-pink-500">
+            </div>
+
+            <button type="submit"
+                class="w-full bg-pink-600 hover:bg-pink-700 text-white font-semibold py-2 rounded-lg shadow-md transition duration-200">
+                Sign Up
+            </button>
+        </form>
+
+        <div class="flex items-center my-6">
+            <hr class="flex-grow border-gray-300">
+            <span class="px-2 text-gray-400 text-sm">OR</span>
+            <hr class="flex-grow border-gray-300">
+        </div>
+        <p class="text-center text-sm text-gray-600">
+            Already have an account?
+            <a href="{% url 'login-page' %}" class="text-blue-600 hover:underline">Log in</a>
+        </p>
+    </div>
+    <script>
+        function dismissMessage(button) {
+            const message = button.closest('div[role="alert"]');
+            if (!message) return;
+
+            message.classList.add('alert-exit-active');
+            setTimeout(() => message.remove(), 300);
+        }
+
+        // Animate messages and auto-dismiss
+        document.querySelectorAll('#messages-container > div[role="alert"]').forEach(message => {
+            // trigger enter animation
+            requestAnimationFrame(() => message.classList.add('alert-enter-active'));
+
+            // Auto-dismiss after 5 seconds
+            setTimeout(() => {
+                const btn = message.querySelector('button');
+                if (btn) dismissMessage(btn);
+            }, 5000);
+        });
+
+    </script>
+</body>
+
+</html>
