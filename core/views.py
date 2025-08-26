@@ -1,28 +1,51 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import Http404
 from django.contrib.auth import get_user_model
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_decode
+from django.core.mail import send_mail
 from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from .email import generate_email_verification_token
 
 User = get_user_model()
+
 
 def login_view(request):
     if request.method == 'POST':
         try:
             username = request.POST.get('username')
             password = request.POST.get('password')
-            user = authenticate(username=username, password=password)
-            if user is not None:
+            if not username or not password:
+                messages.error(request, 'Please provide both username and password.')
+                return redirect('login-page')
+            
+            user = get_object_or_404(User, username=username)
+                
+            if not user.check_password(password):
+                messages.error(request, 'Invalid credentials were given. Please try again.')
+                return redirect('login-page')
+            elif not user.is_active:
+                messages.error(request, 'Inactive account. Activate your account before you login.')
+                return redirect('login-page')
+            else:
                 login(request, user)
                 return redirect('home-page')
+        except Http404:
             messages.error(request, 'Invalid credentials were given. Please try again.')
             return redirect('login-page')
-        except:
-            messages.error(request, 'Unable to process your inputs. Please try again.')
+        except Exception as e:
+            messages.error(request, 'Unable to process your inputs. Please try again')
+            return redirect('login-page')
     return render(request, 'login/login.html')
 
+
+@login_required
 def home_view(request):
     return render(request, 'home/home.html')
     
+
 def register_view(request):
     if request.method == 'POST':
         try:
@@ -36,9 +59,37 @@ def register_view(request):
                     messages.error(request, 'This email is associated with another user.')
                 else:
                     user = User.objects.create_user(username=username, password=password, email=email)
-                    login(request, user)
-                    return redirect('home-page')
-            messages.error(request, 'Please enter valid inputs.')
-        except:
+                    try:
+                        generate_email_verification_token(request, user)
+                        return redirect('verify-email-message-page')
+                    except Exception as e:
+                        print(f'Error while generating token: {e}')
+                        messages.error(request, 'Internal server error. Try again.')
+            else:
+                messages.error(request, 'Please enter valid inputs. All fields are required.')
+        except Exception as e:
+            print(e)
             messages.error(request, 'Internal server errors. Please try again.')
     return render(request, 'register/register.html')
+
+
+def verify_email_notification_view(request):
+    return render(request, 'accounts/verify-email.html')
+
+
+def verify_email_view(request, uidb64, token):
+    try:
+        uid = urlsafe_base64_decode(uidb64).decode()
+        user = User.objects.get(pk=uid)
+    except:
+        user = None
+    
+    if user and default_token_generator.check_token(user, token):
+        user.is_active = True
+        user.save()
+        login(request, user)
+        return redirect('login-page')
+    messages.error(request, 'Invalid token, user not found.')
+    return redirect('login-page')
+
+
