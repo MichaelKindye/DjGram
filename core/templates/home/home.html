@@ -5,7 +5,305 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home - DjGram</title>
 </head>
-<body>
-    Welcome
+
+<body data-user="{{user.username}}">
+    <!-- Left side users list and search form -->
+    <div class="users-list-container">
+        <div class="search-form-container">
+            <form id="search-form" action="{% url 'home-page' %}">
+                <input type="text" name="search" placeholder="Search users...">
+            </form>
+        </div>
+        <div class="users-list">
+            {% if users %}
+                {% for user in users %}
+                    <div data-username="{{user.username}}" class="profile-container">
+                        <div class="profile-div">{{ user.username|first|upper }}</div>
+                        <p>{{ user.username|capfirst }}</p>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Right side chat box -->
+     <div class="chat-box-container">
+        <div class="chat-box" id="chat-box">
+            <ul id="chat-ul"><!-- there is a child li to append here--></ul>
+        </div>
+        <div class="input-box" id="input-box">
+            <form id="chat-form" autocomplete="off">
+                <input type="text" name="chat-input" id="chat-input">
+                <button type="submit"><img src="../../static/chat/send-icon.svg" alt="send"></button>
+            </form>
+        </div>
+     </div>
+     <script src="../../static/chat/chat.js"></script>
 </body>
 </html>
+
+ <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+        }
+
+        body {
+            display: flex;
+            height: 100vh;
+            background-color: #ffffff;
+            color: #333333;
+        }
+
+        /* Users list container - Telegram style */
+        .users-list-container {
+            width: 30%;
+            background-color: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #d3d3d3;
+        }
+
+        /* Search form */
+        .search-form-container {
+            padding: 12px;
+            background-color: #f0f0f0;
+            border-bottom: 1px solid #d3d3d3;
+        }
+
+        #search-form input {
+            width: 100%;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 18px;
+            outline: none;
+            font-size: 14px;
+            background-color: #ffffff;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Users list */
+        .users-list {
+            flex: 1;
+            overflow-y: auto;
+            background-color: #ffffff;
+        }
+
+        .profile-container {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .profile-container:hover {
+            background-color: #f5f5f5;
+        }
+
+        .profile-div {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff69b4
+, #2e93d3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 18px;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .profile-container p {
+            font-size: 16px;
+            color: #333333;
+            font-weight: 500;
+        }
+
+        /* Chat container - Telegram style */
+        .chat-box-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: #e6ebf5;
+        }
+
+    .chat-box {
+        height: 600px;           /* fixed height */
+        overflow-y: auto;        /* enable vertical scroll */
+        display: flex;
+        flex-direction: column-reverse; /* bottom-up stacking */
+        border: 1px solid #ccc;
+        padding: 0;
+    }
+
+    #chat-ul {
+        display: flex;
+        flex-direction: column;  /* messages inside stack normally */
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+
+    #chat-ul li{
+        align-items: flex-end;
+    }
+
+    #chat-ul li:hover .delete-message{
+        display: block;
+    }
+
+    #chat-ul li p {
+        min-width: fit-content;
+        max-width: 70%;
+        margin: 5px 0;
+        padding: 8px 12px;
+        color: white;
+        background-color: #f5cee1;
+        border-radius: 12px;         
+        word-wrap: break-word;
+    }
+
+    #chat-ul li button {
+        width: 35%;
+        height: 30px;
+        display: none;
+        background: none;
+        border: none;
+        margin: 0 7px;
+        border-radius: 5px;
+        transition: all ease .1s;
+    }
+
+    #chat-ul li button:hover {
+        background-color: rgba(199, 66, 66, 0.5);
+    }
+
+        .input-box {
+            padding: 12px 15px;
+            background-color: #ffffff;
+            border-top: 1px solid #d3d3d3;
+        }
+
+        .input-box form {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .input-box input {
+            flex: 1;
+            padding: 12px 18px;
+            border: none;
+            border-radius: 22px;
+            outline: none;
+            font-size: 15px;
+            background-color: #f0f0f0;
+        }
+
+        .input-box input:focus {
+            background-color: #ffffff;
+            box-shadow: 0 0 0 1px #ff69b4
+;
+        }
+
+        .input-box button {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff69b4
+, #7d3fe2);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Message styling */
+        .message {
+            max-width: 70%;
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message-content {
+            padding: 10px 15px;
+            border-radius: 10px;
+            word-wrap: break-word;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .message.received {
+            align-items: flex-start;
+        }
+
+        .message.received .message-content {
+            background-color: #ffffff;
+            border-top-left-radius: 2px;
+        }
+
+        .message.sent {
+            align-items: flex-end;
+            align-self: flex-end;
+            margin-left: auto;
+        }
+
+        .message.sent .message-content {
+            background: linear-gradient(135deg, #d5edff, #b3d9ff);
+            border-top-right-radius: 2px;
+            color: #0d3b66;
+        }
+
+        .message-time {
+            font-size: 12px;
+            color: #999;
+            margin-top: 5px;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            
+            .users-list-container {
+                width: 100%;
+                height: 40%;
+            }
+            
+            .chat-box-container {
+                width: 100%;
+                height: 60%;
+            }
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+    </style>
