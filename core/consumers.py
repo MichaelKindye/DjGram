@@ -97,6 +97,9 @@ class MessageConsumer(AsyncWebsocketConsumer):
         }))
 
     async def dispatch_event(self, event):
+        if event['user'] == self.sender_user.username:
+            return
+        
         await self.send(text_data=json.dumps({
             'action':event['action'],
             'user':event['user']
