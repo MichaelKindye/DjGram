@@ -51,8 +51,21 @@ class MessageConsumer(AsyncWebsocketConsumer):
             await self.close()
             return
         
+        #message delition request
         if data.get('action') == 'delete_message'.lower():
             await self.delete_message(data.get('message_id'))
+            return
+
+        #typing event indicator
+        if data.get('action') == 'typing'.lower():
+            await self.channel_layer.group_send(
+                self.room_name,
+                {
+                    'type':'dispatch_event',
+                    'action':'typing',
+                    'user':self.sender_user.username
+                }
+            )
             return
         
         message = data.get('message')
@@ -81,6 +94,12 @@ class MessageConsumer(AsyncWebsocketConsumer):
             'message_id':event['message_id'],
             'sender':event['sender'],
             'message':event['message']
+        }))
+
+    async def dispatch_event(self, event):
+        await self.send(text_data=json.dumps({
+            'action':event['action'],
+            'user':event['user']
         }))
 
     @database_sync_to_async

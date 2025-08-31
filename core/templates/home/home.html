@@ -28,6 +28,24 @@
 
     <!-- Right side chat box -->
      <div class="chat-box-container">
+        <div class="clicked-profile">
+            <div data-username="{{user.username}}" class="clicked-profile-container">
+                <div>
+                <div class="profile-div clicked-profile-div"></div>
+                <p class="clicked-profile-username"></p>
+                </div>
+                <div class="typing-indicator">
+                    <pre id="typing">typing</pre>
+                    <div class="dot-div">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                </div>
+                
+            </div>
+            
+        </div>
         <div class="chat-box" id="chat-box">
             <ul id="chat-ul"><!-- there is a child li to append here--></ul>
         </div>
@@ -40,6 +58,7 @@
      </div>
      <script src="../../static/chat/chat.js"></script>
      <script src="../../static/chat/search.js"></script>
+     <!--<script src="../../static/chat/typing.js"></script>-->
 </body>
 </html>
 
@@ -105,12 +124,27 @@
             background-color: #f5f5f5;
         }
 
+        .clicked-profile-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 4px 10px 4px 10px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .clicked-profile-container div {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
         .profile-div {
             width: 48px;
             height: 48px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #ff69b4
-, #2e93d3);
+            background: linear-gradient(135deg, #ff69b4, #2e93d3);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -125,6 +159,52 @@
             font-size: 16px;
             color: #333333;
             font-weight: 500;
+            display: block;
+            margin-right: 100%;
+        }
+
+        #typing {
+            font-size: small;
+            margin-left: 4rem;
+            margin-top: 0;
+            color: #22b4f8;
+        }
+
+        .typing-indicator {
+            display: none;
+            align-items: center;
+            gap: 5px; /* Adjust spacing between dots */
+        }
+
+        .dot-div {
+            margin-top: 18px;
+            display: flex;
+            gap: 1px;
+        }
+
+        .dot {
+            width: 4px;
+            height: 4px;
+            background-color: #22b4f8; /* Dot color */
+            border-radius: 50%;
+            animation: bounce 1s infinite ease-in-out;
+        }
+
+        .dot:nth-child(2) {
+            animation-delay: 0.1s; /* Stagger animation for second dot */
+        }
+
+        .dot:nth-child(3) {
+            animation-delay: 0.2s; /* Stagger animation for third dot */
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-5px); /* Adjust bounce height */
+            }
         }
 
         /* Chat container - Telegram style */
@@ -135,57 +215,58 @@
             background-color: #e6ebf5;
         }
 
-    .chat-box {
-        height: 600px;           /* fixed height */
-        overflow-y: auto;        /* enable vertical scroll */
-        display: flex;
-        flex-direction: column-reverse; /* bottom-up stacking */
-        border: 1px solid #ccc;
-        padding: 0;
-    }
+        .chat-box {
+            height: 600px;           /* fixed height */
+            overflow-y: auto;        /* enable vertical scroll */
+            display: flex;
+            flex-direction: column-reverse; /* bottom-up stacking */
+            border: 1px solid #ccc;
+            padding: 0;
+        }
 
-    #chat-ul {
-        display: flex;
-        flex-direction: column;  /* messages inside stack normally */
-        list-style: none;
-        margin: 0;
-        padding: 0;
-    }
+        #chat-ul {
+            display: flex;
+            flex-direction: column;  /* messages inside stack normally */
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
 
 
-    #chat-ul li{
-        align-items: flex-end;
-    }
+        #chat-ul li{
+            align-items: flex-end;
+            max-width: 70%;
+        }
 
-    #chat-ul li:hover .delete-message{
-        display: block;
-    }
+        #chat-ul li:hover .delete-message{
+            display: block;
+        }
 
-    #chat-ul li p {
-        min-width: fit-content;
-        max-width: 70%;
-        margin: 5px 0;
-        padding: 8px 12px;
-        color: white;
-        background-color: #f5cee1;
-        border-radius: 12px;         
-        word-wrap: break-word;
-    }
+        #chat-ul li p {
+            min-width: fit-content;
+            max-width: 70%;
+            margin: 5px 0;
+            padding: 8px 12px;
+            color: white;
+            background-color: #f5cee1;
+            border-radius: 12px;         
+            word-wrap: break-word;
+        }
 
-    #chat-ul li button {
-        width: 35%;
-        height: 30px;
-        display: none;
-        background: none;
-        border: none;
-        margin: 0 7px;
-        border-radius: 5px;
-        transition: all ease .1s;
-    }
+        #chat-ul li button {
+            width: 35%;
+            height: 30px;
+            display: none;
+            background: none;
+            border: none;
+            margin: 0 7px;
+            border-radius: 5px;
+            transition: all ease .1s;
+        }
 
-    #chat-ul li button:hover {
-        background-color: rgba(199, 66, 66, 0.5);
-    }
+        #chat-ul li button:hover {
+            background-color: rgba(199, 66, 66, 0.5);
+        }
 
         .input-box {
             padding: 12px 15px;
@@ -211,16 +292,14 @@
 
         .input-box input:focus {
             background-color: #ffffff;
-            box-shadow: 0 0 0 1px #ff69b4
-;
+            box-shadow: 0 0 0 1px #ff69b4;
         }
 
         .input-box button {
             width: 44px;
             height: 44px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #ff69b4
-, #7d3fe2);
+            background: linear-gradient(135deg, #ff69b4, #7d3fe2);
             color: white;
             border: none;
             cursor: pointer;
@@ -229,48 +308,6 @@
             align-items: center;
             justify-content: center;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Message styling */
-        .message {
-            max-width: 70%;
-            margin-bottom: 15px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .message-content {
-            padding: 10px 15px;
-            border-radius: 10px;
-            word-wrap: break-word;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-        }
-
-        .message.received {
-            align-items: flex-start;
-        }
-
-        .message.received .message-content {
-            background-color: #ffffff;
-            border-top-left-radius: 2px;
-        }
-
-        .message.sent {
-            align-items: flex-end;
-            align-self: flex-end;
-            margin-left: auto;
-        }
-
-        .message.sent .message-content {
-            background: linear-gradient(135deg, #d5edff, #b3d9ff);
-            border-top-right-radius: 2px;
-            color: #0d3b66;
-        }
-
-        .message-time {
-            font-size: 12px;
-            color: #999;
-            margin-top: 5px;
         }
 
         /* Responsive design */
