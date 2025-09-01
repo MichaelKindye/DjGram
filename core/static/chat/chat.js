@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 li.appendChild(delBtn);
                 boxUl.appendChild(li);
                 box.append(boxUl);
-                let nearBottom = box.scrollTop < 50;
+                let nearBottom = box.scrollTop < 5;
                 console.log(nearBottom);
                 if (nearBottom) {
                     box.scrollTo({
