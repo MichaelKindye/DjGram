@@ -1,2 +1,4 @@
 #environment variables
+__pycache__/
 .env
+.dockerignore
