@@ -87,6 +87,18 @@ body {
     flex-shrink: 0;
 }
 
+.online-dot {
+    width: 10px;
+    height: 10px;
+    background-color: rgb(66, 182, 66);
+    border-radius: 50%;
+    border: 1.5px solid white;
+    position: relative;
+    top: 20px;
+    left: -30px;
+    box-shadow: 0 0 5px rgba(66, 182, 66, 0.7);
+}
+
 .profile-container p {
     font-size: 16px;
     color: #333333;
@@ -245,9 +257,6 @@ body {
         flex-direction: column;
     }
     
-    .users-list-container {
-        display: none;
-    }
     
     .chat-box-container {
         width: 100%;

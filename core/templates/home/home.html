@@ -21,6 +21,7 @@
                 {% for user in users %}
                     <div data-username="{{user.username}}" class="profile-container">
                         <div class="profile-div">{{ user.username|first|upper }}</div>
+                        <div class="online-dot-{{user.id}}"></div>
                         <p>{{ user.username|capfirst }}</p>
                     </div>
                 {% empty %}

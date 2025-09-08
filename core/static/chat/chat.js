@@ -12,6 +12,15 @@ document.addEventListener('DOMContentLoaded', () => {
     typingText.style.display = 'none';
     clickedProfile.style.display = 'none';
 
+    ws.onmessage = (e) => {
+        data = JSON.parse(e.data);
+        if (data['type'] === 'online_status') {
+            statusDot = document.querySelector(`.online-dot-${data['user_id']}`);
+            statusDot.style.visibility = data['is_online'] ? 'visible' : 'hidden';
+            console.log(statusDot);
+        }
+    }
+
     document.querySelectorAll('.profile-container').forEach(container => {
         container.addEventListener('click', () => {
             const pairUser = container.dataset.username;

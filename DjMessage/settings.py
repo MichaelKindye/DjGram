@@ -35,7 +35,7 @@ CHANNEL_LAYERS = {
     'default':{
         'BACKEND' : 'channels_redis.core.RedisChannelLayer',
         'config' : {
-            'hosts' : [os.getenv('REDIS_URL')]
+            'hosts' : [('172.29.242.144', 6379)]
         }
     }
 }
@@ -96,15 +96,17 @@ ASGI_APPLICATION = 'DjMessage.asgi.application'
 
 AUTH_USER_MODEL = 'core.User'
 
+import dj_database_url
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'THE-DJANGO-MESSAGE-APP-DATABASE',
-        'USER': 'postgres',
-        'PASSWORD' : str(os.getenv('POSTGRESQL_PASSWORD')),
-        'HOST': 'localhost',
-        'PORT': 5432
+    #'default': dj_database_url.parse(os.getenv('DATABASE_URL')) 
+    'default' : {
+        'ENGINE':'django.db.backends.postgresql',
+        'NAME':'THE-DJANGO-MESSAGE-APP-DATABASE',
+        'USER':'postgres',
+        'PASSWORD':'12344321',
+        'HOST':'localhost',
+        'PORT':5432
     }
 }
 
