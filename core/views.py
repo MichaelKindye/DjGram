@@ -1,17 +1,14 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.http import Http404, JsonResponse
+from django.shortcuts import get_object_or_404
+from django.http import Http404
 from django.contrib.auth import get_user_model
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_decode
-from django.contrib.auth import login, logout
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
 from .email import generate_email_verification_token
 import json
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import AllowAny
 from rest_framework import status
 
 User = get_user_model()
@@ -41,10 +38,6 @@ def register_view(request):
     except Exception as e:
         print(e)
         return Response({'error':'Internal server error. Try again.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-#scheduled to remove
-def verify_email_notification_view(request):
-    return render(request, 'accounts/verify-email.html')
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
