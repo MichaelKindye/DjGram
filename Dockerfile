@@ -15,6 +15,6 @@ RUN chown -R appuser:appgroup /app
 USER appuser
 
 ENV PYTHONUNBUFFERED=1
-ENV DJANGO_SETTINGS_MODULE=DjMessage.DJANGO_SETTINGS_MODULE
+ENV DJANGO_SETTINGS_MODULE=DjMessage.settings
 
 CMD ["daphne", "-b", "0.0.0.0", "-p", "10000", "DjMessage.asgi:application"]

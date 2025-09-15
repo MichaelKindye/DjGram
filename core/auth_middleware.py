@@ -12,7 +12,7 @@ class JwtAuthMiddleware(BaseMiddleware):
     async def __call__(self, scope, receive, send):
         query_string = parse_qs(scope.get('query_string', b'').decode())
         token = query_string.get('token')
-        token = token[0]
+        token = token[0] if token else None
 
         if not token and 'header' in scope:
             headers = dict(scope['headers'])
@@ -29,6 +29,8 @@ class JwtAuthMiddleware(BaseMiddleware):
                 scope['user'] = await database_sync_to_async(User.objects.get)(pk=verified_token['user_id'])
             except Exception:
                 scope['user'] = AnonymousUser()
+        else:
+            scope['user'] = AnonymousUser()
         return await super().__call__(scope, receive, send)
 
 

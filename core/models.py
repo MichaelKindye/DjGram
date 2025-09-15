@@ -5,6 +5,7 @@ class User(AbstractUser):
     email = models.EmailField(unique=True)
     followers = models.IntegerField(default=0)
     is_active = models.BooleanField(default=False)
+    is_online = models.BooleanField(default=False)
 
 class Room(models.Model):
     name = models.CharField(max_length=250)

@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     'daphne',
     'channels',
     'core',
+    'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -37,7 +38,7 @@ INSTALLED_APPS = [
 CHANNEL_LAYERS = {
     'default':{
         'BACKEND' : 'channels_redis.core.RedisChannelLayer',
-        'config' : {
+        'CONFIG' : {
             'hosts' : [os.getenv('REDIS_URL')]
         }
     }
@@ -65,15 +66,21 @@ REST_FRAMEWORK = {
 from datetime import timedelta
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=30),
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
 }
 
 
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+]
+
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -113,7 +120,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'THE-DJANGO-MESSAGE-APP-DATABASE',
         'USER': 'postgres',
-        'PASSWORD' : str(os.getenv('POSTGRESQL_PASSWORD')),
+        'PASSWORD' : str(os.getenv('POSTGRESQL_PASSWORD_LOCAL',)),
         'HOST': 'localhost',
         'PORT': 5432
     }
@@ -135,7 +142,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-PASSWORD_REST_TIMEOUT = 3600
+PASSWORD_RESET_TIMEOUT = 3600
 
 LANGUAGE_CODE = 'en-us'
 
