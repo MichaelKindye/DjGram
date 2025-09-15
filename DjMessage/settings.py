@@ -22,20 +22,26 @@ INSTALLED_APPS = [
     'daphne',
     'channels',
     'core',
+    'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
 ]
 
 
 CHANNEL_LAYERS = {
     'default':{
         'BACKEND' : 'channels_redis.core.RedisChannelLayer',
-        'config' : {
-            'hosts' : [('172.29.242.144', 6379)]
+
+
+        'CONFIG' : {
+            'hosts' : [os.getenv('REDIS_URL')]
         }
     }
 }
@@ -49,20 +55,34 @@ EMAIL_HOST_USER = str(os.getenv('EMAIL_HOST_USER'))
 EMAIL_HOST_PASSWORD = str(os.getenv('EMAIL_HOST_PASSWORD'))
 
 
-from django.contrib.messages import constants as messages
-
-
-MESSAGE_TAGS = {
-    messages.DEBUG: 'debug',
-    messages.INFO: 'info',
-    messages.SUCCESS: 'success',
-    messages.WARNING: 'warning',
-    messages.ERROR: 'error'
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES':[
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES':[
+        'rest_framework.permissions.IsAuthenticated',
+    ]
 }
+
+
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=30),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
+}
+
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+]
 
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -99,15 +119,12 @@ AUTH_USER_MODEL = 'core.User'
 import dj_database_url
 
 DATABASES = {
-    #'default': dj_database_url.parse(os.getenv('DATABASE_URL')) 
-    'default' : {
-        'ENGINE':'django.db.backends.postgresql',
-        'NAME':'THE-DJANGO-MESSAGE-APP-DATABASE',
-        'USER':'postgres',
-        'PASSWORD':'12344321',
-        'HOST':'localhost',
-        'PORT':5432
-    }
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'THE-DJANGO-MESSAGE-APP-DATABASE',
+        'USER': 'postgres',
+        'PASSWORD' : str(os.getenv('POSTGRESQL_PASSWORD_LOCAL',)),
+        'HOST': 'localhost',
+        'PORT': 5432
 }
 
 
@@ -126,6 +143,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+PASSWORD_RESET_TIMEOUT = 3600
 
 LANGUAGE_CODE = 'en-us'
 
